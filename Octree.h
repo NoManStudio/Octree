@@ -15,13 +15,13 @@ public:
     int last_parent = 0;
     PointType genesisBlock;
 
-    std::vector<std::vector<OctNode<PointType>>> nodes;
+    std::vector<std::vector<std::vector<OctNode<PointType>>>> nodes;
 
     Octree(int chunkSize);
 
     bool insert(OctNode<PointType> node);
 
-    OctNode<PointType>& get(int depth, int index);
+    OctNode<PointType>& get(int depth, int index, int parent);
 
     void printAllNodes(Octree<PointType>& octree);
 

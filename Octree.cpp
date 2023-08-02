@@ -10,38 +10,33 @@ bool Octree<PointType>::insert(OctNode<PointType> node) {
 
     int depth = node.depth;
     int index = node.index;
-    // Expand vectors size if needed
+    int parent = node.parentI;
+    // Expand vectors size if    needed
     if (depth >= nodes.size()) {
         nodes.resize(depth + 1);
     }
     if (index >= nodes[depth].size()) {
         nodes[depth].resize(index + 1);
     }
-
+    if (index >= nodes[depth][parent].size()) {
+        nodes[depth][parent].resize(parent + 1);
+    }
     // Insert node into correct depth vector
-    nodes[depth][index] = node;
+    nodes[depth][parent][index] = node;
 
     return true;
 
 }
 
 template<typename PointType>
-Octree<PointType>::Octree(PointType rootValue, int chunkSize) {
-
-    OctNode<PointType>* root = new OctNode<PointType>();
-    root->depth = 0;
-    root->index = 0;
-    root->PT = new PointType(rootValue);
-
-    insert(*root);
-
+Octree<PointType>::Octree(int chunkSize) {
     Max_depth = log2(chunkSize);
     chunk_size = chunkSize;
 }
 
 template<typename PointType>
-OctNode<PointType>& Octree<PointType>::get(int depth, int index) {
-    return nodes[depth][index];
+OctNode<PointType>& Octree<PointType>::get(int depth, int index, int parent) {
+    return nodes[depth][parent][index];
 }
 
 
@@ -49,20 +44,26 @@ template<typename PointType>
 void Octree<PointType>::printNode(OctNode<PointType> node) {
     std::cout << "Depth: " << node.depth
               << " Index: " << node.index
-              << " Parent Index: " << node.parentI
-              << std::endl;
+              << " Parent Index: " << node.parentI    << std::endl;
+    std::cout << " Data:  " << node.PT->data << std::endl;
+
 }
 
+template<typename PointType>
 template<typename PointType>
 void Octree<PointType>::printAllNodes(Octree<PointType>& octree) {
 
     for (int i = 0; i < octree.nodes.size(); i++) {
+
         for (int j = 0; j < octree.nodes[i].size(); j++) {
 
-            OctNode<PointType> node = octree.nodes[i][j];
+            for (int k = 0; k < octree.nodes[i][j].size(); k++) {
 
-            if (node.PT != nullptr) {
-                printNode(node);
+                OctNode<PointType> node = octree.nodes[i][j][k];
+
+                if (node.PT != nullptr) {
+                    printNode(node);
+                }
             }
         }
     }
@@ -78,18 +79,23 @@ bool Octree<PointType>::insertNode(PointType node) {
         std::cout << "_____________parent:  " <<  parent << std::endl;
         if(i == Max_depth)
             break;
+        last_parent = parent;
         OctNode<PointType>* on = new OctNode<PointType>();
         on->depth = current_depth;
         on->index = parent;
-        on->parentI = last_midpoint;
+        on->parentI = last_parent;
         insert(*on);
     }
+    PointType* Point = new PointType(node);
     OctNode<PointType>* on = new OctNode<PointType>();
     on->depth = current_depth;
     on->index = parent;
-    on->parentI = last_midpoint;
-    on->PT = *node;
+    on->parentI = last_parent;
+    on->PT = Point;
     insert(*on);
+    current_depth = 0;
+    last_midpoint = 0;
+    last_parent = 0;
 }
 
 //this should return the parent node in current depth
@@ -100,16 +106,21 @@ int Octree<PointType>::getParent(PointType node) {
     int parent;
     //get the boundries
     int bound = chunk_size / depth;
-    int midPoint = (last_midpoint) + (bound / 2);
-    last_midpoint = midPoint;
+    int midPoint;
     int x = node.x - genesisBlock.x;
     int y = node.y - genesisBlock.y;
-    int xMid = bound / 2;
-    int yMid = bound / 2;
+    if(depth == 1)
+        midPoint =  bound / 2;
+    else if(last_midpoint <= x)
+        midPoint = (last_midpoint) + (bound/2);
+    else
+        midPoint = (last_midpoint) - (bound/2);
+    last_midpoint = midPoint;
+
     int row = -1;
     int col = -1;
     std::cout<< "bound:  " << bound << std::endl
-         << "midpoint:  " << midPoint << std::endl;
+             << "midpoint:  " << midPoint << std::endl;
     //get x region
     if(x >= midPoint)
         col = 1;

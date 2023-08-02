@@ -23,7 +23,8 @@ struct Point {
 };
 int main()
 {
-    Point p1(2, 2, 8, "8");
+    Point p1(0, 1, 8, "8");
+    Point p2(1, 0, 1, "1");
     Point p3(1, 1, 1, "1");
     Point p4(0, 0, 8, "test");
 //    Point p5(7, 8, 8);
@@ -36,11 +37,14 @@ int main()
     oc->insertNode(p4);
     oc->insertNode(p3);
     oc->insertNode(p1);
-//    oc->insertNode(p4);
+    oc->insertNode(p2);
+    oc->printAllNodes(*oc);
 
 //    oc->insert(*on);
-    OctNode<Point> ot = oc->get(2, 0);
-    oc->printAllNodes(*oc);
-    std::cout<< "point" <<  *ot.PT;
+//    OctNode<Point> ot = oc->get(2, 0, 0);
+//    std::cout<< "point" <<  *ot.PT;
 
 }
+
+
++

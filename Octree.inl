@@ -10,16 +10,19 @@ bool Octree<PointType>::insert(OctNode<PointType> node) {
 
     int depth = node.depth;
     int index = node.index;
+    int parent = node.parentI;
     // Expand vectors size if    needed
     if (depth >= nodes.size()) {
         nodes.resize(depth + 1);
     }
-    if (index >= nodes[depth].size()) {
-        nodes[depth].resize(index + 1);
+    if (parent >= nodes[depth].size()) {
+        nodes[depth].resize(parent + 1);
     }
-    std::cout << depth << " ______" << index;
+    if (index >= nodes[depth][parent].size()) {
+        nodes[depth][parent].resize(index + 1);
+    }
     // Insert node into correct depth vector
-    nodes[depth][index] = node;
+    nodes[depth][parent][index] = node;
 
     return true;
 
@@ -32,8 +35,8 @@ Octree<PointType>::Octree(int chunkSize) {
 }
 
 template<typename PointType>
-OctNode<PointType>& Octree<PointType>::get(int depth, int index) {
-    return nodes[depth][index];
+OctNode<PointType>& Octree<PointType>::get(int depth, int index, int parent) {
+    return nodes[depth][parent][index];
 }
 
 
@@ -50,12 +53,16 @@ template<typename PointType>
 void Octree<PointType>::printAllNodes(Octree<PointType>& octree) {
 
     for (int i = 0; i < octree.nodes.size(); i++) {
+
         for (int j = 0; j < octree.nodes[i].size(); j++) {
 
-            OctNode<PointType> node = octree.nodes[i][j];
+            for (int k = 0; k < octree.nodes[i][j].size(); k++) {
 
-            if (node.PT != nullptr) {
-                printNode(node);
+                OctNode<PointType> node = octree.nodes[i][j][k];
+
+                if (node.PT != nullptr) {
+                    printNode(node);
+                }
             }
         }
     }
