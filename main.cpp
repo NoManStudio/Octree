@@ -14,27 +14,33 @@ struct Point {
     float x;
     float y;
     float z;
+    std::string data;
     Point() {} // Default constructor
     friend std::ostream& operator<<(std::ostream& os, const Point& p) {
         return os << "(" << p.x << ", " << p.y << ", " << p.z << ")";
     }
-    Point(float x, float y, float z) : x(x), y(y), z(z) {}
+    Point(float x, float y, float z, std::string data) : x(x), y(y), z(z), data(data) {}
 };
 int main()
 {
-    Point p1(2, 2, 8);
-    Point p3(1, 1, 1);
-    Point p4(8, 7, 8);
-    Point p5(7, 8, 8);
-    Point genesisBlock(0, 0, 0);
+    Point p1(2, 2, 8, "8");
+    Point p3(1, 1, 1, "1");
+    Point p4(0, 0, 8, "test");
+//    Point p5(7, 8, 8);
+    Point genesisBlock(0, 0, 0, "Hello");
 
     OctNode<Point>* on = new OctNode<Point>();
 
-    Octree<Point>* oc = new Octree<Point>(genesisBlock, 4);
+    Octree<Point>* oc = new Octree<Point>(4);
     oc->genesisBlock = genesisBlock;
+    oc->insertNode(p4);
+    oc->insertNode(p3);
     oc->insertNode(p1);
+//    oc->insertNode(p4);
+
 //    oc->insert(*on);
-//    OctNode<int> ot = oc->get(1, 1);
-//    std::cout<< *ot.PT;
-//    oc->printAllNodes(*oc);
+    OctNode<Point> ot = oc->get(2, 0);
+    oc->printAllNodes(*oc);
+    std::cout<< "point" <<  *ot.PT;
+
 }

@@ -11,11 +11,13 @@ public:
     int Max_depth = 0;
     int current_depth = 0;
     int chunk_size = 0;
+    int last_midpoint = 0;
+    int last_parent = 0;
     PointType genesisBlock;
 
     std::vector<std::vector<OctNode<PointType>>> nodes;
 
-    Octree(PointType rootValue, int chunkSize);
+    Octree(int chunkSize);
 
     bool insert(OctNode<PointType> node);
 
