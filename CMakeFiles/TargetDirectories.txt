@@ -1,0 +1,3 @@
+/home/amirmfarhang/CLionProjects/Octree/CMakeFiles/octree.dir
+/home/amirmfarhang/CLionProjects/Octree/CMakeFiles/edit_cache.dir
+/home/amirmfarhang/CLionProjects/Octree/CMakeFiles/rebuild_cache.dir

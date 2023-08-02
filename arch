@@ -1,0 +1,91 @@
+template<typename PointType>
+void Octree<PointType>::insertPoint(PointType point) {
+
+    // Assume genesis block is at origin
+    PointType origin = genesisBlock;
+
+    // Calculate depth and index from point coordinates
+    int depth = calculateDepth(point, origin, 8);
+    int index = calculateIndex(point, origin, 8);
+
+    // Create new node
+    OctNode<PointType>* newNode = new OctNode<PointType>();
+    newNode->depth = depth;
+    newNode->index = index;
+    newNode->PT = new PointType(point);
+
+    // Insert node into octree
+    insert(*newNode);
+
+}
+
+template<typename PointType>
+int Octree<PointType>::calculateDepth(PointType point, PointType origin, int maxDepth) {
+
+    int depth = 0;
+
+    while (depth < MAX_DEPTH) {
+        int size = pow(2, depth);
+
+        if (abs(point.x) < size &&
+            abs(point.y) < size &&
+            abs(point.z) < size) {
+            break;
+        }
+
+        depth++;
+    }
+
+    return depth;
+
+}
+
+template<typename PointType>
+int Octree<PointType>::calculateIndex(PointType point, PointType origin, int size) {
+
+    int xIndex = (point.x + size/2) / size;
+    int yIndex = (point.y + size/2) / size;
+    int zIndex = (point.z + size/2) / size;
+
+    return xIndex + yIndex*size + zIndex*size*size;
+
+}
+
+template<typename PointType>
+void Octree<PointType>::print() {
+
+    // Print header
+    std::cout << "Depth\tIndex\tPoint" << std::endl;
+
+    // Print each level
+    for (int depth = 0; depth < nodes.size(); depth++) {
+
+        std::cout << depth << ":" << std::endl;
+
+        // Print each node at this depth
+        for (int index = 0; index < nodes[depth].size(); index++) {
+
+            auto& node = nodes[depth][index];
+
+            std::cout << depth << "\t"
+                      << index << "\t";
+
+            if (node.PT != nullptr) {
+                std::cout << *node.PT;
+            } else {
+                std::cout << "null";
+            }
+
+            std::cout << std::endl;
+        }
+    }
+
+}
+
+    void insertPoint(PointType point);
+
+    int calculateDepth(PointType point, PointType origin, int maxDepth);
+
+    int calculateIndex(PointType point, int depth);
+
+    void print();
