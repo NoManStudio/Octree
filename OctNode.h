@@ -11,6 +11,9 @@ class OctNode
 public:
     int depth = 0;
     int parentI = 0;
+    int parent3 = 0;
+    int parent2 = 0;
+    int parent1 = 0;
     int index= 0;
     PointType* PT = nullptr;
 };

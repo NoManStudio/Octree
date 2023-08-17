@@ -11,11 +11,13 @@ public:
     int Max_depth = 0;
     int current_depth = 0;
     int chunk_size = 0;
-    int last_midpoint = 0;
+    int last_xmidpoint = 0;
+    int last_ymidpoint = 0;
+    int last_zmidpoint = 0;
     int last_parent = 0;
     PointType genesisBlock;
 
-    std::vector<std::vector<std::vector<OctNode<PointType>>>> nodes;
+    std::vector<std::vector<std::vector<std::vector<std::vector<std::vector<OctNode<PointType>>>>>>> nodes;
 
     Octree(int chunkSize);
 
